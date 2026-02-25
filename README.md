@@ -9,26 +9,50 @@
 
 <br/>
 
-
 ![Java](https://img.shields.io/badge/java-007396?style=flat-square&logo=java&logoColor=white)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
 ![JPA](https://img.shields.io/badge/JPA-2496ED?style=flat-square&logo=jpa&logoColor=white)
 ![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=flat-square&logo=mariaDB&logoColor=white)
+
 </div>
 
 ---
 
 # 📋 목차
 
-- [주요 기능](#-주요-기능)
 - [기술 스택](#-기술-스택)
-- [팀 구성](#-팀-구성)
-- [주요 성과](#-주요-성과)
+- [주요 기능](#-주요-기능)
+- [프로젝트 구조](#-프로젝트-구조)
+- [아키텍처](#-아키텍처)
+- [실행 방법](#-실행-방법)
+- [데이터베이스](#-데이터베이스-구조)
 
 ---
 
-# ✨ 주요 기능
+# 기술 스택
+
+| 구분         | 기술                              |
+| ------------ | --------------------------------- |
+| **Language** | Java 17                           |
+| **Platform** | Jakarta EE (Servlet 6.0, JSP 3.1) |
+| **Build**    | Maven                             |
+| **Database** | MariaDB                           |
+| **View**     | JSP, JSTL                         |
+| **Security** | jBCrypt (비밀번호 해싱)           |
+| **Logging**  | SLF4J                             |
+
+# 주요 기능
+
+- **회원 시스템** - 회원가입, 로그인, 프로필 이미지 업로드
+- **게시판** - 다중 보드 및 카테고리별 게시물 관리
+- **Q&A** - 답변 채택 기능이 있는 질문/답변 시스템
+- **반응** - 좋아요, 스크랩(북마크) 기능
+- **댓글** - 게시물에 대한 댓글 작성 및 답변 채택
+- **마이페이지** - 내 게시물, 스크랩 목록, 계정 설정
+- **포인트/뱃지** - 사용자 활동 기반 게이미피케이션
+- **검색** - 제목 기반 게시물 검색
+- **페이지네이션** - 최신순, 조회수, 좋아요, 댓글수 정렬
 
 <br/>
 
@@ -52,7 +76,7 @@
 
 ### 👤 게시글
 
-> 좋아요 및 스크랩 · 마크다운 에디터 · 정렬 
+> 좋아요 및 스크랩 · 마크다운 에디터 · 정렬
 
 <table>
   <tr>
@@ -114,34 +138,103 @@
 </tbody>
 </table>
 
----
+# 프로젝트 구조
 
-# 🔧 기술 스택
+```
+src/main/
+├── java/gotit/
+│   ├── core/          # FrontController, ViewPaths (핵심 프레임워크)
+│   ├── model/         # Entity 클래스 (User, Post, Board, Comment 등)
+│   ├── auth/          # 인증 (로그인, 회원가입)
+│   ├── post/          # 게시물 CRUD
+│   ├── board/         # 게시판 목록 및 탐색
+│   ├── comment/       # 댓글 및 답변
+│   ├── reaction/      # 좋아요, 스크랩
+│   ├── mypage/        # 마이페이지
+│   ├── file/          # 파일 업로드 (프로필 이미지)
+│   ├── page/          # 페이지네이션 유틸리티
+│   └── common/util/   # 공통 유틸리티
+└── webapp/
+    ├── WEB-INF/
+    │   ├── views/     # JSP 파일 (post, board, auth, mypage 등)
+    │   └── web.xml    # 서블릿 설정
+    └── assets/        # CSS, JS, 이미지
+```
 
-| 구분 | 기술 |
-|------|------|
-| **Frontend** | HTML, CSS, JavaScript, JSP |
-| **Backend** | Java (JDK 17) |
-| **Database** | MariaDB |
-| **Infra** | Apache Tomcat |
+# 아키텍처
 
----
+**Front Controller 패턴** 기반 MVC 구조를 사용합니다.
 
-# 👥 팀 구성
+```
+요청 (*.do)
+    └── FrontController
+            ├── /auth.do   → AuthController
+            ├── /board.do  → BoardController
+            ├── /post.do   → PostController
+            ├── /mypage.do → MyPageController
+            └── /admin.do  → AdminController
+```
 
-> 2인 풀스택 팀 · 개발 기간 14일 (기획 3일 · 설계 3일 · 개발 8일 · 테스트 1일)
+각 Controller는 Service → DAO 레이어를 통해 DB와 통신하며, 결과를 JSP View로 포워딩합니다.
 
-| 이름 | 담당 역할 |
-|------|-----------|
-| 박수빈 | UI/디자인, 게시글/댓글 CRUD, 좋아요/스크랩, 댓글 채택, 마이페이지 |
-| 정** | PM, UI디자인, 로그인/회원관리, 유저 권한,  포인트/등급, 검색/정렬 |
+# 실행 방법
 
----
+### 사전 요구사항
 
-# 🏆 주요 성과
+- JDK 17+
+- Apache Tomcat 10.x+
+- MariaDB 10.x+
+- Maven 3.x+
 
-- 게시글 CRUD 및 좋아요·스크랩 기능 구현으로 핵심 커뮤니티 기능 완성
-- 댓글 작성·수정·삭제·채택 시스템 개발 및 프론트엔드 연동
-- 반응형 웹 디자인으로 PC 및 모바일 전 해상도 완벽 대응
+### 1. 데이터베이스 설정
 
----
+MariaDB에 데이터베이스를 생성하고 스키마를 적용합니다.
+
+```sql
+CREATE DATABASE gotdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+### 2. Tomcat JNDI DataSource 설정
+
+`context.xml`에 아래 DataSource를 추가합니다.
+
+```xml
+<Resource name="jdbc/gotDB"
+          auth="Container"
+          type="javax.sql.DataSource"
+          driverClassName="org.mariadb.jdbc.Driver"
+          url="jdbc:mariadb://localhost:3306/gotdb"
+          username="your_username"
+          password="your_password"
+          maxTotal="20"
+          maxIdle="10" />
+```
+
+### 3. 빌드 및 배포
+
+```bash
+# 빌드
+mvn clean package
+
+# 생성된 WAR 파일을 Tomcat webapps에 배포
+cp target/gotit.war $TOMCAT_HOME/webapps/
+```
+
+### 4. 접속
+
+```
+http://localhost:8080/gotit/
+```
+
+# 데이터베이스 구조
+
+| 테이블             | 설명                  |
+| ------------------ | --------------------- |
+| `users`            | 회원 정보             |
+| `boards`           | 게시판 정보           |
+| `board_categories` | 게시판 카테고리       |
+| `posts`            | 게시물                |
+| `post_comments`    | 댓글 (답변 채택 포함) |
+| `post_likes`       | 좋아요                |
+| `post_scraps`      | 스크랩                |
+| `user_badges`      | 뱃지 정의             |
